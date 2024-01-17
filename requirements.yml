@@ -1,14 +1,9 @@
 ---
 roles:
   - name: geerlingguy.docker
-    version: 6.0.0
-
-  - name: geerlingguy.docker_arm
-    version: 5.0.0
-
-  - name: bertvv.samba
-    version: v2.7.1
-
+    version: 7.0.2
+  # new versions of the role are multi-architecture:
+  # https://github.com/geerlingguy/ansible-role-docker_arm deprecated Sep 5, 2023
   - name: geerlingguy.nfs
     version: 2.0.0
 
@@ -16,3 +11,9 @@ collections:
   - name: ansible.posix
   - name: community.docker
   - name: community.general
+  - name: vladgh.samba
+    version: ">=3.3.0"
+  # https://galaxy.ansible.com/ui/standalone/roles/bertvv/samba/
+  # - Deprecated, please use vladgh.samba (collection) instead.
+  # https://galaxy.ansible.com/vladgh/samba
+  # - https://github.com/vladgh/ansible-collection-vladgh-samba

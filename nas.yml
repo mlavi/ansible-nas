@@ -1,6 +1,8 @@
 ---
 - name: Ansible-NAS
   hosts: all
+  collections:
+    - vladgh.samba.server
 
   roles:
     ###
@@ -11,7 +13,7 @@
         - ansible-nas-users
         - ansible-nas
 
-    - role: bertvv.samba
+    - role: vladgh.samba.server
       tags:
         - samba
         - skip_ansible_lint
@@ -22,15 +24,8 @@
         - skip_ansible_lint
 
     - role: geerlingguy.docker
-      when: ansible_architecture == "x86_64"
       tags:
         - docker
-        - skip_ansible_lint
-
-    - role: geerlingguy.docker_arm
-      when: ansible_architecture == "aarch64"
-      tags:
-        - docker_arm
         - skip_ansible_lint
 
     ###
