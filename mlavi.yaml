@@ -1,0 +1,9 @@
+---
+- name: "Ansible-NAS"
+  hosts: nas
+  collections:
+    - mlavi.homelab
+  tasks:
+    - name: "Import family"
+      ansible.builtin.import_role:
+        name: family
