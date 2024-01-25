@@ -4,19 +4,6 @@
   collections:
     - vladgh.samba.server
     - mlavi.homelab
-  tasks:
-    - name: "Import homepage"
-      ansible.builtin.import_role:
-        name: homepage
-    - name: "Import keepass4web_rs"
-      ansible.builtin.import_role:
-        name: keepass4web_rs
-    - name: "Import samba4_ad_dc"
-      ansible.builtin.import_role:
-        name: samba4_ad_dc
-    - name: "Import webtainer"
-      ansible.builtin.import_role:
-        name: webtainer
 
   roles:
     ###
