@@ -4,7 +4,18 @@
   collections:
     - vladgh.samba.server
     - mlavi.homelab
-
+  tasks:
+    - name: "Import homepage"
+      ansible.builtin.import_role:
+        name: homepage
+    - name: "Import keepass4web_rs"
+      when: ansible_facts['architecture'] != 'armv7l'
+      ansible.builtin.import_role:
+        name: keepass4web_rs
+    - name: "Import webtainer"
+      ansible.builtin.import_role:
+        name: webtainer
+        # new roles, otherwise collection roles override below.
   roles:
     ###
     ### Requirements
@@ -163,6 +174,7 @@
         - healthchecks.io
 
     - role: heimdall
+      when: ansible_facts['architecture'] != 'armv7l'
       tags:
         - heimdall
 
@@ -183,6 +195,7 @@
         - jackett
 
     - role: jellyfin
+      when: ansible_facts['architecture'] != 'armv7l'
       tags:
         - jellyfin
 
@@ -207,6 +220,7 @@
         - loki
 
     - role: mealie
+      when: ansible_facts['architecture'] != 'armv7l'
       tags:
         - mealie
 

@@ -4,6 +4,9 @@
   collections:
     - mlavi.homelab
   tasks:
+    - name: "Show facts available on the system"
+      ansible.builtin.debug:
+        var: ansible_facts
     - name: "Import family"
       ansible.builtin.import_role:
         name: family
