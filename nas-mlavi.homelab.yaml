@@ -5,8 +5,13 @@
     - vladgh.samba.server
     - mlavi.homelab
   tasks:
-    # import new collection roles here; the roles: section below will be overridden.
-    # using include_role: {{ item }} is faster and dynamic, but --start-at-tag can't target?
+    # Import new collection roles here; the roles: section below will be overridden.
+    # Using include_role: {{ item }} is faster and dynamic,
+    #   but --start-at-tag can't target? unless role::block::tag used?
+    # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tags.html#selectively-running-tagged-tasks-in-reusable-files
+    - name: "Import authelia"
+      ansible.builtin.import_role:
+        name: authelia
     - name: "Import homepage"
       ansible.builtin.import_role:
         name: homepage
@@ -14,10 +19,10 @@
       when: ansible_facts['architecture'] != 'armv7l'
       ansible.builtin.import_role:
         name: keepass4web_rs
-    - name: "Import keycloak"
-      when: ansible_facts['architecture'] != 'armv7l'
-      ansible.builtin.import_role:
-        name: keycloak
+    # - name: "Import keycloak"
+    #   when: ansible_facts['architecture'] != 'armv7l'
+    #   ansible.builtin.import_role:
+    #     name: keycloak
     - name: "Import maildev"
       when: ansible_facts['architecture'] != 'armv7l'
       ansible.builtin.import_role:
