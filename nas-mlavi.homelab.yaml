@@ -5,6 +5,9 @@
     - vladgh.samba.server
     - mlavi.homelab
   tasks:
+    # Raspberry Pi 4b: install a 64 bit OS (arm64), not armfh (32 bit), etc.
+    # https://www.raspberrypi.com/news/raspberry-pi-os-64-bit/
+    # e.g.: ubuntu-22.04.3-preinstalled-server-arm64+raspi.img.xz
     # Import new collection roles here; the roles: section below will be overridden.
     # Using include_role: {{ item }} is faster and dynamic,
     #   but --start-at-tag can't target? unless role::block::tag used?
@@ -12,6 +15,13 @@
     - name: "Import authelia"
       ansible.builtin.import_role:
         name: authelia
+    - name: "Import docker-mailserver"
+      when: ansible_facts['architecture'] != 'armv7l'
+      ansible.builtin.import_role:
+        name: docker-mailserver
+    - name: "Import gravity"
+      ansible.builtin.import_role:
+        name: gravity
     - name: "Import homepage"
       ansible.builtin.import_role:
         name: homepage
@@ -23,10 +33,10 @@
     #   when: ansible_facts['architecture'] != 'armv7l'
     #   ansible.builtin.import_role:
     #     name: keycloak
-    - name: "Import maildev"
-      when: ansible_facts['architecture'] != 'armv7l'
-      ansible.builtin.import_role:
-        name: maildev
+    # - name: "Import maildev"
+    #   when: ansible_facts['architecture'] != 'armv7l'
+    #   ansible.builtin.import_role:
+    #     name: maildev
     - name: "Import webtainer"
       ansible.builtin.import_role:
         name: webtainer
