@@ -1,3 +1,13 @@
 collections:
   - name: mlavi.homelab
     version: ">=0.1.0"
+  # https://galaxy.ansible.com/ui/standalone/roles/bertvv/samba/
+  # - Deprecated, please use vladgh.samba (collection) instead.
+  # ansible-galaxy remove role bertvv.samba
+  #
+  # https://galaxy.ansible.com/vladgh/samba
+  # - https://github.com/vladgh/ansible-collection-vladgh-samba
+  # ansible-galaxy collection list vladgh.samba
+  # ansible-galaxy collection install vladgh.samba --upgrade
+  - name: vladgh.samba
+    version: ">=3.3.0"

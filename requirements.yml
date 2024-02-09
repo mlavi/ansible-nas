@@ -11,9 +11,3 @@ collections:
   - name: ansible.posix
   - name: community.docker
   - name: community.general
-  - name: vladgh.samba
-    version: ">=3.3.0"
-  # https://galaxy.ansible.com/ui/standalone/roles/bertvv/samba/
-  # - Deprecated, please use vladgh.samba (collection) instead.
-  # https://galaxy.ansible.com/vladgh/samba
-  # - https://github.com/vladgh/ansible-collection-vladgh-samba
