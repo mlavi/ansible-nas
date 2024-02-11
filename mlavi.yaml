@@ -1,0 +1,19 @@
+---
+- name: "Ansible-NAS"
+  hosts: "nas"
+  collections:
+    - "mlavi.developer"
+  tasks:
+    # - name: "Show facts available on the system"
+    #   ansible.builtin.debug:
+    #     var: ansible_facts
+    - name: "Install https://asdf-vm.com with role cimon-io.asdf"
+      tags: "asdf"
+      ansible.builtin.include_role:
+        name: "cimon-io.asdf"
+    - name: "Import admin"
+      ansible.builtin.import_role:
+        name: "admin"
+    - name: "Import family"
+      ansible.builtin.import_role:
+        name: "family"

@@ -4,7 +4,6 @@
   collections:
     - "vladgh.samba.server"
     - "mlavi.homelab"
-    - "mlavi.developer"
   tasks:
     # - name: "Show facts available on the system"
     #   ansible.builtin.debug:
@@ -23,16 +22,11 @@
 
             You will be able to run more 64-bit than 32-bit containers, unless you compile your own."
     # Import new collection roles here; the roles: section below will be overridden.
+    # - name: "Import homepage"
+    # - name: "Import portainer"
     # Using include_role: {{ item }} is faster and dynamic,
     #   but --start-at-tag can't target? unless role::block::tag used?
     # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tags.html#selectively-running-tagged-tasks-in-reusable-files
-    - name: "Import admin"
-      ansible.builtin.import_role:
-        name: admin
-    - name: "Import family"
-      ansible.builtin.import_role:
-        name: "family"
-#
     - name: "Import authelia"
       ansible.builtin.import_role:
         name: authelia
@@ -43,9 +37,6 @@
     - name: "Import gravity"
       ansible.builtin.import_role:
         name: gravity
-    # - name: "Import homepage"
-    #   ansible.builtin.import_role:
-    #     name: homepage
     - name: "Import keepass4web_rs"
       when: ansible_facts['architecture'] != 'armv7l' or
             ansible_facts['architecture'] != 'linux/arm64/v8' or
@@ -56,9 +47,6 @@
       when: ansible_facts['architecture'] != 'armv7l'
       ansible.builtin.import_role:
         name: keycloak
-    # - name: "Import portainer"
-    #   ansible.builtin.import_role:
-    #     name: portainer
     - name: "Import webtainer"
       ansible.builtin.import_role:
         name: webtainer
