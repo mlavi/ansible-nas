@@ -1,18 +1,19 @@
 ---
 - name: "Ansible-NAS"
-  hosts: nas
+  hosts: "nas"
   collections:
-    - vladgh.samba.server
-    - mlavi.homelab
+    - "vladgh.samba.server"
+    - "mlavi.homelab"
+    - "mlavi.developer"
   tasks:
     # - name: "Show facts available on the system"
     #   ansible.builtin.debug:
     #     var: ansible_facts
-    - name: "Note: Raspberry Pi"
+    - name: "Note for Raspberry Pi 32-bit OS"
       when: ansible_facts['architecture'] == 'armv7l'
       ansible.builtin.debug:
         msg:
-          - "Raspberry Pi: use a 64-bit OS (arm64) when possible instead of 32-bit: armfh, etc.
+          - "Recommend installing a 64-bit OS (arm64) when possible instead of 32-bit: armfh, etc.
             https://www.raspberrypi.com/news/raspberry-pi-os-64-bit/
             e.g.: ubuntu-22.04.3-preinstalled-server-arm64+raspi.img.xz
 
@@ -25,9 +26,13 @@
     # Using include_role: {{ item }} is faster and dynamic,
     #   but --start-at-tag can't target? unless role::block::tag used?
     # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tags.html#selectively-running-tagged-tasks-in-reusable-files
+    - name: "Import admin"
+      ansible.builtin.import_role:
+        name: admin
     - name: "Import family"
       ansible.builtin.import_role:
-        name: family
+        name: "family"
+#
     - name: "Import authelia"
       ansible.builtin.import_role:
         name: authelia
@@ -38,18 +43,22 @@
     - name: "Import gravity"
       ansible.builtin.import_role:
         name: gravity
-    - name: "Import homepage"
-      ansible.builtin.import_role:
-        name: homepage
+    # - name: "Import homepage"
+    #   ansible.builtin.import_role:
+    #     name: homepage
     - name: "Import keepass4web_rs"
       when: ansible_facts['architecture'] != 'armv7l' or
-            ansible_facts['architecture'] != linux/arm64/v8
+            ansible_facts['architecture'] != 'linux/arm64/v8' or
+            ansible_facts['architecture'] != 'aarch64'
       ansible.builtin.import_role:
         name: keepass4web_rs
     - name: "Import keycloak"
       when: ansible_facts['architecture'] != 'armv7l'
       ansible.builtin.import_role:
         name: keycloak
+    # - name: "Import portainer"
+    #   ansible.builtin.import_role:
+    #     name: portainer
     - name: "Import webtainer"
       ansible.builtin.import_role:
         name: webtainer
