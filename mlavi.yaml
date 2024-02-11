@@ -7,6 +7,28 @@
     # - name: "Show facts available on the system"
     #   ansible.builtin.debug:
     #     var: ansible_facts
+    - name: "TODO"
+      ansible.builtin.debug:
+        msg:
+        - "Add asdf, cockpit roles to: requirments-mlavi.yaml?"
+
+    # https://jon.sprig.gs/blog/post/1525
+    - name: "Stat last apt run"
+      ansible.builtin.stat:
+        path: "/var/cache/apt/pkgcache.bin"
+      register: "apt_run"
+    - name: "Check apt {update,full-upgrade,autoremove,autoclean}"
+      ansible.builtin.debug:
+        msg: "Skipping apt-update, etc. actions as apt update was run today"
+      when: "'%Y-%m-%d' | strftime(apt_run.stat.mtime) in ansible_date_time.date"
+    - name: "Perform apt {update,full-upgrade,autoremove,autoclean}"
+      ansible.builtin.apt:
+        upgrade: "full"
+        update_cache: yes
+        autoremove: yes
+        autoclean: yes
+      when: "'%Y-%m-%d' | strftime(apt_run.stat.mtime) not in ansible_date_time.date"
+
     - name: "Install https://asdf-vm.com with role cimon-io.asdf"
       tags: "asdf"
       ansible.builtin.include_role:
