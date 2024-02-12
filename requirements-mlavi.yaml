@@ -1,5 +1,5 @@
 collections:
-  - name: mlavi.homelab
+  - name: "mlavi.homelab"
     version: ">=0.1.0"
   # https://galaxy.ansible.com/ui/standalone/roles/bertvv/samba/
   # - Deprecated, please use vladgh.samba (collection) instead.
@@ -9,5 +9,11 @@ collections:
   # - https://github.com/vladgh/ansible-collection-vladgh-samba
   # ansible-galaxy collection list vladgh.samba
   # ansible-galaxy collection install vladgh.samba --upgrade
-  - name: vladgh.samba
+  - name: "vladgh.samba"
     version: ">=3.3.0"
+roles:
+  - name: "cimon-io.asdf"
+    version: ">=1.1.0"
+  - name: "alecunsolo.cockpit"
+    version: ">=1.2.0"
+
