@@ -7,6 +7,20 @@
     # p task.args
     # p task_vars
   vars:
+    asdf_default_tool_versions_file: ".tool-versions" # prevents issue
+    asdf_group: "{{ ansible_user }}"
+    asdf_plugins:
+      - global: "latest"
+        name: "direnv"
+        versions: ["latest"] # 2.33.0
+      - global: "0.23.1"
+        # https://github.com/jesseduffield/lazydocker
+        name: "lazydocker"
+        versions: ["0.23.1"]
+        repository: "https://github.com/comdotlinux/asdf-lazydocker.git"
+    asdf_user: "{{ ansible_user }}"
+    # https://github.com/asdf-vm/asdf/tags
+    asdf_version: "v0.14.0"
     systemd_networkd_wait_online: "/etc/systemd/system/systemd-networkd-wait-online.service.d"
   tasks:
     - name: "Configure systemd-networkd-wait-online.service"
@@ -21,7 +35,7 @@
             mode: "a+rx,u+w"
             owner: "root"
             path: "{{ systemd_networkd_wait_online }}"
-            state: directory
+            state: "directory"
         - name: "Configure systemd-networkd-wait-online.service.d"
           ansible.builtin.copy:
             content: "[Service]\nExecStart=\nExecStart=/usr/lib/systemd/systemd-networkd-wait-online --any --timeout=45\n"
@@ -31,17 +45,31 @@
             mode: "a+r,u+w"
             owner: "root"
       always:
-        # - name: "Show system facts"
-        #   ansible.builtin.debug:
-        #     var: "ansible_user"
-        #     var: "ansible_facts"
-        #     msg:
-        #     - "Added roles: to requirments-mlavi.yaml"
-        - name: "Install https://asdf-vm.com role"
+        - name: "Import https://asdf-vm.com role"
           tags: "asdf"
           ansible.builtin.import_role:
             name: "cimon-io.asdf"
           # debugger> p task_vars['asdf_user']
+        - name: "Configure .bash_aliases"
+          ansible.builtin.copy:
+            content: "source ${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/bashrc && echo '|SOURCE|ASDF|https://direnv.net'\nalias da='direnv allow'\n"
+            dest: "/home/{{ ansible_user }}/.bash_aliases"
+            force: false
+            group: "{{ ansible_user }}"
+            mode: "a+r,u+w"
+            owner: "{{ ansible_user }}"
+        - name: "Tech Debt"
+          ansible.builtin.debug:
+            msg:
+            - "TODO: Improve Hook asdf::direnv to shell: hardcoded to ansible_user"
+            # var: "ansible_facts"
+            # var: "ansible_user"
+        # - name: "Hook asdf::direnv to shell"
+        #   tags: "asdf"
+        #   ansible.builtin.shell:
+        #     cmd: "/etc/profile.d/asdf.sh && asdf direnv setup --version latest"
+            # --shell bash
+            # source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/bashrc"
         - name: "Stat last apt run"
           # https://jon.sprig.gs/blog/post/1525
           ansible.builtin.stat:
