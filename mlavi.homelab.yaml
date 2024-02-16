@@ -29,28 +29,46 @@
     # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tags.html#selectively-running-tagged-tasks-in-reusable-files
     - name: "Import authelia"
       ansible.builtin.import_role:
-        name: authelia
+        name: "authelia"
+    - name: "Import baikal"
+      ansible.builtin.import_role:
+        name: "baikal"
     - name: "Import docker-mailserver"
       when: ansible_facts['architecture'] != 'armv7l'
       ansible.builtin.import_role:
-        name: docker-mailserver
+        name: "docker-mailserver"
     - name: "Import gravity"
       ansible.builtin.import_role:
-        name: gravity
+        name: "gravity"
     - name: "Import keepass4web_rs"
       when: ansible_facts['architecture'] != 'armv7l' or
             ansible_facts['architecture'] != 'linux/arm64/v8' or
             ansible_facts['architecture'] != 'aarch64'
       ansible.builtin.import_role:
-        name: keepass4web_rs
+        name: "keepass4web_rs"
     - name: "Import keycloak"
       when: ansible_facts['architecture'] != 'armv7l'
       ansible.builtin.import_role:
-        name: keycloak
+        name: "keycloak"
+    - name: "Import samba4_ad_dc"
+      ansible.builtin.import_role:
+        name: "samba4_ad_dc"
     - name: "Import webtainer"
       ansible.builtin.import_role:
-        name: webtainer
-
+        name: "webtainer"
+    - name: "Check for serial device..."
+      ansible.builtin.shell: "ls -l /dev/serial/by-id"
+      register: "serial_by_id"
+    - name: "Reset homeassistant_enabled"
+      # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_conditionals.html#conditions-based-on-registered-variables
+      when:
+        serial_by_id.stdout.find('Zigbee') != -1 and
+        serial_by_id.stdout.find('ttyUSB0') != -1
+      ansible.builtin.set_fact:
+        homeassistant_enabled: false
+      tags:
+        - "homeassistant"
+        - "mlavi.homelab.homeassistant"
   roles:
     ###
     ### Requirements

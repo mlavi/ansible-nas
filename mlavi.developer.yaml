@@ -6,22 +6,6 @@
     # p task
     # p task.args
     # p task_vars
-  vars:
-    asdf_default_tool_versions_file: ".tool-versions" # prevents issue
-    asdf_group: "{{ ansible_user }}"
-    asdf_plugins:
-      - global: "latest"
-        name: "direnv"
-        versions: ["latest"] # 2.33.0
-      - global: "0.23.1"
-        # https://github.com/jesseduffield/lazydocker
-        name: "lazydocker"
-        versions: ["0.23.1"]
-        repository: "https://github.com/comdotlinux/asdf-lazydocker.git"
-    asdf_user: "{{ ansible_user }}"
-    # https://github.com/asdf-vm/asdf/tags
-    asdf_version: "v0.14.0"
-    systemd_networkd_wait_online: "/etc/systemd/system/systemd-networkd-wait-online.service.d"
   tasks:
     - name: "Configure systemd-networkd-wait-online.service"
       when: ansible_facts['distribution'] == "Ubuntu"
