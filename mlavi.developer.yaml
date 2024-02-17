@@ -1,5 +1,5 @@
 ---
-- name: "Ansible-NAS"
+- name: "Bootstrap Server"
   hosts: "nas"
   collections:
     - "mlavi.developer"
