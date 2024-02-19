@@ -4,10 +4,15 @@
   collections:
     - "vladgh.samba.server"
     - "mlavi.homelab"
-  tasks:
+    - "mlavi.developer"
+  pre_tasks:
     # - name: "Show facts available on the system"
     #   ansible.builtin.debug:
     #     var: "ansible_facts"
+    - name: "Import family"
+      ansible.builtin.import_role:
+        name: "family"
+  tasks:
     - name: "Note for Raspberry Pi 32-bit OS"
       when: ansible_facts['architecture'] == 'armv7l'
       ansible.builtin.debug:
@@ -68,6 +73,21 @@
       tags:
         - "homeassistant"
         - "mlavi.homelab.homeassistant"
+    - name: "user+group hard coded to 'ansible-nas':"
+      ansible.builtin.debug:
+        msg: "roles/ansible-nas-{general,users}/tasks/main.yml"
+    - name: "Ammend family + ansible_user"
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups:
+          - "ansible-nas"
+        append: true
+      loop:
+        - "{{ ansible_user }}"
+        - "davi"
+        - "mari"
+        - "mark"
+        - "victoria"
 
 ### Ansible-nas roles to override:
   roles:

@@ -11,8 +11,6 @@
     - name: "Import family"
       ansible.builtin.import_role:
         name: "family"
-      tags:
-        - ansible-nas-users
   roles:
     - role: ansible-nas-users
       tags:
