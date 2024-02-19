@@ -6,8 +6,7 @@ Vagrant.require_version ">= 2.2.2"
 
 Vagrant.configure(2) do |config|
   config.vm.define "ansible-nas-test" do
-    config.vm.box = "ubuntu/bionic64"
-
+    config.vm.box = "ubuntu/jammy64"
     # `vagrant box outdated`. This is not recommended.
     config.vbguest.auto_update = false # saves time, embedded 6.0 forward compatible?
     config.vm.box_check_update = false # otherwise, every vagrant up
@@ -20,26 +19,27 @@ Vagrant.configure(2) do |config|
     # # https://developer.hashicorp.com/vagrant/docs/networking/public_network
     config.vm.network "public_network", bridge: ENV["HOST_INTERFACE"],
       hostname: true, ip: ENV["VAGRANT_IP"]
+    config.vm.synced_folder "../../../gitlab.com/mlavi/ansible-collection/mlavi/homelab/roles/samba4_ad_dc/files/",
+      "/home/vagrant/role-files", disabled: false
     # config.vm.synced_folder "../../server/bootstrap/",
     #   ENV["VAGRANT_SYNCED_FOLDER"], disabled: false
-    # config.vm.synced_folder "../../../ansible-collection/mlavi/homelab/roles/samba4_ad_dc/",
-    #   "/home/vagrant/role", disabled: false
 
-    config.vm.provision "ansible_local" do |ansible|
-      ansible.compatibility_mode = "2.0"
-      ansible.galaxy_role_file = "requirements.yml"
-      ansible.inventory_path = "tests/inventories/integration_testing/inventory"
-      ansible.playbook = "nas.yml"
-      ansible.become = true
-      ansible.raw_arguments = [
-        "--extra-vars @tests/test.yml"
-      ]
+    # config.vm.provision "ansible_local" do |ansible|
+    #   ansible.compatibility_mode = "2.0"
+    #   ansible.galaxy_role_file = "requirements.yml"
+    #   ansible.inventory_path = "tests/inventories/integration_testing/inventory"
+    #   ansible.playbook = "nas.yml"
+    #   ansible.become = true
+    #   ansible.raw_arguments = [
+    #     "--extra-vars @tests/test.yml"
+    #   ]
 
-    # config.vm.provision "shell", inline: <<-SHELL
-    #   uname -a && hostname -f
-    #   role/files/vagrant.sh
-    # SHELL
+    config.vm.provision "shell", inline: <<-SHELL
+      uname -a && hostname -f
+      echo 'ssh-keygen -f ~/.ssh/known_hosts -R "${VAGRANT_HOSTNAME}"'
+      echo 'ansible-playbook mlavi.samba.yaml'
+    SHELL
 
-    end
+    # end
   end
 end
