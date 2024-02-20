@@ -1,16 +1,13 @@
 ---
 - name: "Ansible-NAS: mlavi.homelab enhancements and overrides"
-  hosts: "vagrant"
-  collections:
-    - "vladgh.samba.server"
-    - "mlavi.developer"
+  hosts: vagrant
   pre_tasks:
     # - name: "Show facts available on the system"
     #   ansible.builtin.debug:
     #     var: "ansible_facts"
     - name: "Import family"
       ansible.builtin.import_role:
-        name: "family"
+        name: mlavi.developer.family
   roles:
     - role: ansible-nas-users
       tags:
@@ -29,18 +26,16 @@
         - ansible-nas-general
         - ansible-nas
   tasks:
-    - name: "user+group hard coded to 'ansible-nas':"
+    - name: "User+group hard coded to 'ansible-nas':"
       ansible.builtin.debug:
-        msg: "roles/ansible-nas-{general,users}/tasks/main.yml"
-    - name: "Ammend family + ansible_user"
+        msg:
+          - "roles/ansible-nas-{general,users}/tasks/main.yml"
+          - "TODO: append group ansible-nas to ansible_user determintation, because not ansible unless bootstrapped"
+    - name: "Append linux_users with group: ansible-nas"
       ansible.builtin.user:
-        name: "{{ item }}"
-        groups:
-          - "ansible-nas"
         append: true
-      loop:
-        - "{{ ansible_user }}"
-        - "davi"
-        - "mari"
-        - "mark"
-        - "victoria"
+        groups:
+          - ansible-nas
+        name: "{{ item.name }}"
+      with_items:
+        - "{{ linux_users }}"

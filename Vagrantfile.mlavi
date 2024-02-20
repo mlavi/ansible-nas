@@ -37,7 +37,7 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell", inline: <<-SHELL
       uname -a && hostname -f
       echo 'ssh-keygen -f ~/.ssh/known_hosts -R "${VAGRANT_HOSTNAME}"'
-      echo 'ansible-playbook mlavi.samba.yaml'
+      echo 'ansible-playbook mlavi.samba-vm.yaml'
     SHELL
 
     # end
