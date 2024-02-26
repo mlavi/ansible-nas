@@ -1,11 +1,9 @@
 ---
 - name: "Bootstrap Server"
   hosts: "nas"
-  collections:
-    - "mlavi.developer"
-    # p task
-    # p task.args
-    # p task_vars
+  # p task
+  # p task.args
+  # p task_vars
   tasks:
     - name: "Configure systemd-networkd-wait-online.service"
       when: ansible_facts['distribution'] == "Ubuntu"
@@ -33,7 +31,7 @@
           tags: "asdf"
           ansible.builtin.import_role:
             name: "cimon-io.asdf"
-          # debugger> p task_vars['asdf_user']
+            # debugger> p task_vars['asdf_user']
         - name: "Configure .bash_aliases"
           ansible.builtin.copy:
             content: "source ${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/bashrc && echo '|SOURCE|ASDF|https://direnv.net'\nalias da='direnv allow'\n"
@@ -44,16 +42,16 @@
             owner: "{{ ansible_user }}"
         - name: "Tech Debt"
           ansible.builtin.debug:
-            msg:
-            - "TODO: Improve Hook asdf::direnv to shell: hardcoded to ansible_user"
-            # var: "ansible_facts"
             # var: "ansible_user"
+            # var: "ansible_facts"
+            msg:
+              - "TODO: Improve Hook asdf::direnv to shell: hardcoded to ansible_user"
         # - name: "Hook asdf::direnv to shell"
         #   tags: "asdf"
         #   ansible.builtin.shell:
         #     cmd: "/etc/profile.d/asdf.sh && asdf direnv setup --version latest"
-            # --shell bash
-            # source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/bashrc"
+        #       --shell bash
+        #       source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/bashrc"
         - name: "Stat last apt run"
           # https://jon.sprig.gs/blog/post/1525
           ansible.builtin.stat:
@@ -72,7 +70,7 @@
             autoclean: yes
         - name: "Import admin"
           ansible.builtin.import_role:
-            name: "admin"
+            name: mlavi.developer.admin
         - name: "Import family"
           ansible.builtin.import_role:
-            name: "family"
+            name: mlavi.developer.family

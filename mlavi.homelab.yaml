@@ -1,18 +1,13 @@
 ---
 - name: "Ansible-NAS: mlavi.homelab enhancements and overrides"
   hosts: "nas"
-  collections:
-    - "vladgh.samba.server"
-    - "mlavi.homelab"
-    - "mlavi.developer"
   pre_tasks:
     # - name: "Show facts available on the system"
     #   ansible.builtin.debug:
     #     var: "ansible_facts"
     - name: "Import family"
       ansible.builtin.import_role:
-        name: "family"
-  tasks:
+        name: "mlavi.developer.family"
     - name: "Note for Raspberry Pi 32-bit OS"
       when: ansible_facts['architecture'] == 'armv7l'
       ansible.builtin.debug:
@@ -25,40 +20,38 @@
             [WARNING]: Docker warning: The requested image's platform (linux/amd64) does not match the detected host platform
             (linux/arm64/v8) and no specific platform was requested
 
-            You will be able to run more 64-bit than 32-bit containers, unless you compile your own."
-    # Import new collection roles here; the roles: section below will be overridden.
-    # Using include_role: {{ item }} is faster and dynamic,
-    #   but --start-at-tag can't target? unless role::block::tag used?
-    # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tags.html#selectively-running-tagged-tasks-in-reusable-files
+            You will probably find more 64-bit containers than 32-bit, unless you compile your own."
+
+  tasks:
     - name: "Import authelia"
       ansible.builtin.import_role:
-        name: "authelia"
+        name: mlavi.homelab.authelia
     - name: "Import baikal"
       ansible.builtin.import_role:
-        name: "baikal"
+        name: mlavi.homelab.baikal
     - name: "Import docker-mailserver"
       when: ansible_facts['architecture'] != 'armv7l'
       ansible.builtin.import_role:
-        name: "docker-mailserver"
+        name: mlavi.homelab.docker_mailserver
     - name: "Import gravity"
       ansible.builtin.import_role:
-        name: "gravity"
+        name: mlavi.homelab.gravity
     - name: "Import keepass4web_rs"
       when: ansible_facts['architecture'] != 'armv7l' or
             ansible_facts['architecture'] != 'linux/arm64/v8' or
             ansible_facts['architecture'] != 'aarch64'
       ansible.builtin.import_role:
-        name: "keepass4web_rs"
+        name: mlavi.homelab.keepass4web_rs
     - name: "Import keycloak"
       when: ansible_facts['architecture'] != 'armv7l'
       ansible.builtin.import_role:
-        name: "keycloak"
+        name: mlavi.homelab.keycloak
     - name: "Import samba4_ad_dc"
       ansible.builtin.import_role:
-        name: "samba4_ad_dc"
+        name: mlavi.homelab.samba4_ad_dc
     - name: "Import webtainer"
       ansible.builtin.import_role:
-        name: "webtainer"
+        name: mlavi.homelab.webtainer
     - name: "Check for serial device..."
       ansible.builtin.shell: "ls -l /dev/serial/by-id"
       ignore_errors: true
@@ -73,7 +66,13 @@
       tags:
         - "homeassistant"
         - "mlavi.homelab.homeassistant"
-    - name: "user+group hard coded to 'ansible-nas':"
+
+  post_tasks:
+    # Import new collection roles here; the roles: section below will be overridden.
+    # Using include_role: {{ item }} is faster and dynamic,
+    #   but --start-at-tag can't target? unless role::block::tag used?
+    # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tags.html#selectively-running-tagged-tasks-in-reusable-files
+    - name: "User+group hard coded to 'ansible-nas':"
       ansible.builtin.debug:
         msg: "roles/ansible-nas-{general,users}/tasks/main.yml"
     - name: "Ammend family + ansible_user"
@@ -88,18 +87,42 @@
         - "mari"
         - "mark"
         - "victoria"
-
-### Ansible-nas roles to override:
   roles:
-    - role: homepage
+    - role: ansible-nas-users
+      tags:
+        - ansible-nas-users
+        - ansible-nas
+    - role: vladgh.samba.server
+      tags:
+        - samba
+        - skip_ansible_lint
+    # - role: geerlingguy.nfs
+    #   tags:
+    #     - nfs
+    #     - skip_ansible_lint
+    - role: geerlingguy.docker
+      tags:
+        - docker
+        - skip_ansible_lint
+    - role: ansible-nas-general
+      tags:
+        - ansible-nas-general
+        - ansible-nas
+
+    - role: ansible-nas-docker
+      tags:
+        - ansible-nas-docker
+        - ansible-nas
+    ### Ansible-nas roles to override:
+    - role: mlavi.homelab.homepage
       tags:
         - homepage
-    - role: jellyfin
+    - role: mlavi.homelab.jellyfin
       tags:
         - jellyfin
-    - role: portainer
+    - role: mlavi.homelab.portainer
       tags:
         - portainer
-    - role: traefik
+    - role: mlavi.homelab.traefik
       tags:
         - traefik
