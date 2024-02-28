@@ -54,15 +54,18 @@
         name: mlavi.homelab.webtainer
     - name: "Check for serial device..."
       ansible.builtin.shell: "ls -l /dev/serial/by-id"
-      ignore_errors: true
-      register: "serial_by_id"
+      failed_when: serial_by_id.rc > 2
+      # serial_by_id.rc != 0 or serial_by_id.rc != 2
+      # "msg": "non-zero return code", "rc": 2, "ls: cannot access '/dev/serial/by-id': No such file or directory", "stderr_lines": ["ls: cannot access '/dev/serial/by-id': No such file or directory"]
+      register: serial_by_id
     - name: "Reset homeassistant_enabled"
-      # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_conditionals.html#conditions-based-on-registered-variables
-      when:
-        serial_by_id.stdout.find('Zigbee') != -1 and
-        serial_by_id.stdout.find('ttyUSB0') != -1
       ansible.builtin.set_fact:
         homeassistant_enabled: false
+      # https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_conditionals.html#conditions-based-on-registered-variables
+      when:
+        serial_by_id.rc == 2
+        # serial_by_id.stdout.find('Zigbee') != -1 and
+        # serial_by_id.stdout.find('ttyUSB0') != -1
       tags:
         - "homeassistant"
         - "mlavi.homelab.homeassistant"

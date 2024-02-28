@@ -5,6 +5,12 @@
   # p task.args
   # p task_vars
   tasks:
+    - name: "Import family"
+      ansible.builtin.import_role:
+        name: mlavi.developer.family
+    - name: "Import admin"
+      ansible.builtin.import_role:
+        name: mlavi.developer.admin
     - name: "Configure systemd-networkd-wait-online.service"
       when: ansible_facts['distribution'] == "Ubuntu"
       # https://unix.stackexchange.com/questions/381448/systemd-networkd-wait-online-failure
@@ -68,9 +74,3 @@
             update_cache: true
             autoremove: true
             autoclean: true
-        - name: "Import admin"
-          ansible.builtin.import_role:
-            name: mlavi.developer.admin
-        - name: "Import family"
-          ansible.builtin.import_role:
-            name: mlavi.developer.family
