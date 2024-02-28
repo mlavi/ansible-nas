@@ -1,6 +1,6 @@
 ---
 - name: "Bootstrap Server"
-  hosts: "nas"
+  hosts: nas
   # p task
   # p task.args
   # p task_vars
@@ -13,24 +13,24 @@
       block:
         - name: "Prepare systemd-networkd-wait-online.service.d"
           ansible.builtin.file:
-            group: "root"
+            group: root
             mode: "a+rx,u+w"
-            owner: "root"
+            owner: root
             path: "{{ systemd_networkd_wait_online }}"
-            state: "directory"
+            state: directory
         - name: "Configure systemd-networkd-wait-online.service.d"
           ansible.builtin.copy:
             content: "[Service]\nExecStart=\nExecStart=/usr/lib/systemd/systemd-networkd-wait-online --any --timeout=45\n"
             dest: "{{ systemd_networkd_wait_online }}/override.conf"
             force: false
-            group: "root"
+            group: root
             mode: "a+r,u+w"
-            owner: "root"
+            owner: root
       always:
         - name: "Import https://asdf-vm.com role"
-          tags: "asdf"
+          tags: asdf
           ansible.builtin.import_role:
-            name: "cimon-io.asdf"
+            name: cimon-io.asdf
             # debugger> p task_vars['asdf_user']
         - name: "Configure .bash_aliases"
           ansible.builtin.copy:
@@ -56,7 +56,7 @@
           # https://jon.sprig.gs/blog/post/1525
           ansible.builtin.stat:
             path: "/var/cache/apt/pkgcache.bin"
-          register: "apt_run"
+          register: apt_run
         - name: "Check apt {update,full-upgrade,autoremove,autoclean}"
           when: "'%Y-%m-%d' | strftime(apt_run.stat.mtime) in ansible_date_time.date"
           ansible.builtin.debug:
@@ -64,10 +64,10 @@
         - name: "Perform apt {update,full-upgrade,autoremove,autoclean}"
           when: "'%Y-%m-%d' | strftime(apt_run.stat.mtime) not in ansible_date_time.date"
           ansible.builtin.apt:
-            upgrade: "full"
-            update_cache: yes
-            autoremove: yes
-            autoclean: yes
+            upgrade: full
+            update_cache: true
+            autoremove: true
+            autoclean: true
         - name: "Import admin"
           ansible.builtin.import_role:
             name: mlavi.developer.admin
