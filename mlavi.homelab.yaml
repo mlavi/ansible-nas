@@ -2,12 +2,6 @@
 - name: "Ansible-NAS: mlavi.homelab enhancements and overrides"
   hosts: "nas"
   pre_tasks:
-    # - name: "Show facts available on the system"
-    #   ansible.builtin.debug:
-    #     var: "ansible_facts"
-    - name: "Import family"
-      ansible.builtin.import_role:
-        name: "mlavi.developer.family"
     - name: "Note for Raspberry Pi 32-bit OS"
       when: ansible_facts['architecture'] == 'armv7l'
       ansible.builtin.debug:
@@ -23,7 +17,14 @@
             You will probably find more 64-bit containers than 32-bit, unless you compile your own."
 
   tasks:
+    # - name: "Show facts available on the system"
+    #   ansible.builtin.debug:
+    #     var: "ansible_facts"
+    - name: "Import family"
+      ansible.builtin.import_role:
+        name: "mlavi.developer.family"
     - name: "Import authelia"
+      tags: sso
       ansible.builtin.import_role:
         name: mlavi.homelab.authelia
     - name: "Import baikal"
@@ -31,6 +32,7 @@
         name: mlavi.homelab.baikal
     - name: "Import docker-mailserver"
       when: ansible_facts['architecture'] != 'armv7l'
+      tags: [ 'mail', 'mailserver' ]
       ansible.builtin.import_role:
         name: mlavi.homelab.docker_mailserver
     - name: "Import gravity"

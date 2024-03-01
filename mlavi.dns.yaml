@@ -1,0 +1,69 @@
+---
+- name: "Bootstrap Server"
+  hosts: nas
+  # p task
+  # p task.args
+  # p task_vars
+  vars:
+    dns_upsert:
+      - { host: test7, data: "192.168.1.77" }
+      - { host: test8, data: "192.168.1.78" }
+  tasks:
+    - name: "Query DNS record"
+      community.docker.docker_container_exec:
+        argv:
+          - /samba/lib/private/tls/dns-update.sh
+          - "{{ item.realm | default(samba4_ad_dc_realm) }}"
+          - "{{ item.host }}"
+          - "{{ item.type | default('A') }}"
+          - "{{ item.data }}"
+        container: "{{ samba4_ad_dc_container_name }}"
+        # debug: true
+      with_items: "{{ dns_upsert }}"
+      # register: command_result
+    # - name: "Query DNS record"
+    #   community.docker.docker_container_exec:
+    #     command: "samba-tool dns query {{ samba4_ad_dc_hostname }} \
+    #       {{ item.realm | default(samba4_ad_dc_realm) }} \
+    #       {{ item.host }} \
+    #       {{ item.type | default('A') }} \
+    #       -U Administrator"
+    #     container: "{{ samba4_ad_dc_container_name }}"
+    #     # debug: true
+    #     env:
+    #       PASSWD: "{{ samba4_ad_dc_admin_passwd }}"
+    #   # changed_when: "'WERR_DNS_ERROR_RECORD_ALREADY_EXISTS' not in command_result.stderr"
+    #   failed_when: command_result.rc > 1 and command_result.rc < 255
+    #   register: command_result
+    #   with_items: "{{ dns_upsert }}"
+    # - name: "Display query result:"
+    #   ansible.builtin.debug:
+    #     msg: "{{ item.rc }}"
+    #   with_items: "{{ command_result.results }}"
+    # - name: "Update DNS record"
+    #   when: item.results.rc == 0
+    #   community.docker.docker_container_exec:
+    #     command: "samba-tool dns update {{ samba4_ad_dc_hostname }} \
+    #       {{ item.realm | default(samba4_ad_dc_realm) }} \
+    #       {{ item.host }} \
+    #       {{ item.type | default('A') }} \
+    #       {{ command_result }} {{ item.data }}
+    #       -U Administrator"
+    #     container: "{{ samba4_ad_dc_container_name }}"
+    #     env:
+    #       PASSWD: "{{ samba4_ad_dc_admin_passwd }}"
+    #   with_items: "{{ dns_upsert }}"
+    # - name: "Add DNS record"
+    #   when: command_result.rc == 255
+    #   community.docker.docker_container_exec:
+    #     command: "samba-tool dns add {{ samba4_ad_dc_hostname }} \
+    #       {{ item.realm | default(samba4_ad_dc_realm) }} \
+    #       {{ item.host }} \
+    #       {{ item.type | default('A') }} \
+    #       {{ item.data }}
+    #       -U Administrator"
+    #     container: "{{ samba4_ad_dc_container_name }}"
+    #     env:
+    #       PASSWD: "{{ samba4_ad_dc_admin_passwd }}"
+    #   with_items:
+    #     - "{{ dns_upsert }}"
