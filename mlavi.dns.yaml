@@ -1,15 +1,13 @@
 ---
 - name: "Bootstrap Server"
   hosts: nas
-  # p task
-  # p task.args
-  # p task_vars
+  # dependency: mlavi/homelab/roles/samba4_ad_dc/files/dns-update.sh
   vars:
     dns_upsert:
       - { host: test7, data: "192.168.1.77" }
       - { host: test8, data: "192.168.1.78" }
   tasks:
-    - name: "Query DNS record"
+    - name: "Upsert DNS record"
       community.docker.docker_container_exec:
         argv:
           - /samba/lib/private/tls/dns-update.sh
