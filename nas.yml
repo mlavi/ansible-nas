@@ -1,9 +1,10 @@
 ---
-- name: Ansible-NAS
+- name: Ansible-NAS.io
   hosts: all
-  collections:
-    - vladgh.samba.server
-
+  tasks:
+    - name: "Import mlavi.homelab"
+      ansible.builtin.import_playbook:
+        name: "mlavi.homelab.ansible_nas_io.yaml"
   roles:
     ###
     ### Requirements
