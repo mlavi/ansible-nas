@@ -8,6 +8,7 @@
 
 - name: Remove docker-py python module
   ansible.builtin.pip:
+    extra_args: --break-system-packages
     name: docker-py
     state: absent
   register: result
@@ -15,6 +16,7 @@
 
 - name: Install docker python module
   ansible.builtin.pip:
+    extra_args: --break-system-packages
     name: docker
     state: present
   register: result
