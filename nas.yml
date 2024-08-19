@@ -1,10 +1,6 @@
 ---
 - name: Ansible-NAS.io
   hosts: all
-  tasks:
-    - name: "Import mlavi.homelab"
-      ansible.builtin.import_playbook:
-        name: "mlavi.homelab.ansible_nas_io.yaml"
   roles:
     ###
     ### Requirements
@@ -453,3 +449,6 @@
     - role: znc
       tags:
         - znc
+- name: "Import mlavi.homelab"
+  ansible.builtin.import_playbook: mlavi.homelab.ansible_nas_io
+  tags: ['mlavi']
