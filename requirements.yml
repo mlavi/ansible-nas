@@ -1,5 +1,5 @@
 ---
-# ansible-galaxy role install --role-file requirements.yml 
+# ansible-galaxy role install --role-file requirements.yml
 roles:
   - name: geerlingguy.docker
     version: 7.0.2
@@ -7,7 +7,7 @@ roles:
   # https://github.com/geerlingguy/ansible-role-docker_arm deprecated Sep 5, 2023
   - name: geerlingguy.nfs
     version: 2.0.0
-# ansible-galaxy collection install --requirements-file requirements.yml
+# ansible-galaxy collection install --requirements-file requirements.yml # --upgrade
 collections:
   - name: ansible.posix
   - name: community.docker
