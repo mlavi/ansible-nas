@@ -12,3 +12,5 @@ collections:
   - name: ansible.posix
   - name: community.docker
   - name: community.general
+  - name: freeipa.ansible_freeipa
+  - name: vladgh.samba
