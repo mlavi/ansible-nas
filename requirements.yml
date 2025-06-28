@@ -5,7 +5,7 @@
 roles:
   # https://github.com/geerlingguy/ansible-role-docker/tags
   - name: geerlingguy.docker
-    version: 7.4.4
+    version: 7.4.7
   # https://github.com/geerlingguy/ansible-role-nfs/tags
   - name: geerlingguy.nfs
     version: 2.1.0
