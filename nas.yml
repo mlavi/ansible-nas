@@ -21,6 +21,8 @@
         - skip_ansible_lint
 
     - role: geerlingguy.docker
+        docker_apt_filename: download_docker_com_linux_ubuntu
+      vars:
       tags:
         - docker
         - skip_ansible_lint
@@ -70,9 +72,9 @@
       tags:
         - calibre
 
-    - role: calibremanager
+    - role: calibreweb
       tags:
-        - calibremanager
+        - calibreweb
 
     - role: cloudcmd
       tags:
