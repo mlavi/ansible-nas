@@ -1,0 +1,54 @@
+min_version = "2026.2.5"
+
+[env]
+# Use the project name derived from the current directory
+PROJECT_NAME = "{{ config_root | basename }}"
+
+# Automatic virtualenv activation
+_.python.venv = { path = ".venv", create = true }
+
+[hooks]
+enter = "echo 'mise.activated'; mise install --quiet"
+
+[tools]
+# https://mise.jdx.dev/mise-cookbook/python.html
+# Too many compilation issues https://github.com/astral-sh/python-build-standalone/issues/33
+# Fallback to system python
+# python = "{{ get_env(name='PYTHON_VERSION', default='3.11.3') }}"
+hk = "latest"
+pkl = "latest"
+uv = "latest" # https://docs.astral.sh/uv/
+node = "latest" # https://mise.jdx.dev/dev-tools/backends/npm.html
+glow = "latest"
+# __ program language and tools
+gitversion = "latest"
+jq = "latest"
+yq = "latest"
+
+[tasks.python-setup]
+alias = "pys"
+description = "Install Python dependencies for Ansible.com"
+run = "pwd; uv pip install --requirements requirements.python.txt && activate-global-python-argcomplete --user"
+[tasks.ansible-check]
+alias = "ac"
+description = "Check for outdated Ansible Python components"
+run = "uv pip list --outdated | grep ansible || true"
+[tasks.python-update]
+alias = "pyup"
+description = "Update all Python components"
+run = "uv pip install --requirements requirements.python.txt --upgrade"
+
+[tasks.info]
+description = "Print project information"
+run = '''
+echo "Project: $PROJECT_NAME"
+echo "Virtual Environment: $VIRTUAL_ENV"
+cat << 'EoM'
+  adt --version
+  hk run pre-commit # hk init && hk install
+EoM
+'''
+
+[[watch_files]]
+patterns = ["mlavi/**/**/*.yaml"]
+task = "build.sh"

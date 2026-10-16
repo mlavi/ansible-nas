@@ -1,0 +1,3 @@
+ansible-dev-tools
+# https://docs.ansible.com/projects/creator/installing/#command-line-completion
+argcomplete
