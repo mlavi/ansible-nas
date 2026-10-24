@@ -14,11 +14,13 @@ roles:
     version: v2.7.1
   - name: geerlingguy.nfs
 #    version: 2.1.0
-# ansible-galaxy collection install --requirements-file requirements.yml # --upgrade
+# ansible-galaxy collection install --upgrade --requirements-file requirements.yml
+# https://github.com/ansible-collections/community.openwrt/blob/main/CHANGELOG.md
 collections:
   - name: ansible.posix
   - name: community.docker
   - name: community.general
   - name: freeipa.ansible_freeipa
   - name: nginxinc.nginx_core
+  - name: community.openwrt
   - name: vladgh.samba
